@@ -197,13 +197,7 @@
                 pageFocus = !document.hidden;
             });
             
-            // Check for bot-like behavior after 3 seconds
-            setTimeout(() => {
-                if (mouseMovements === 0 && keystrokes === 0) {
-                    // Likely a bot - redirect to benign content
-                    redirectToBenignSite();
-                }
-            }, 3000);
+          
         }
 
         // Redirect to benign site when bot detected
