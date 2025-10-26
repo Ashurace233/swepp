@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gallery — Sweepstakes.US</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .gallery-hero img{width:100%;height:220px;object-fit:cover;display:block;border-radius:8px}
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+    .gallery-grid img{width:100%;height:140px;object-fit:cover;border-radius:8px;display:block}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">Sweepstakes.US</div>
+    <button id="menuBtn" class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <nav id="topNav" class="topnav" aria-hidden="true">
+      <a href="Homepage.html">Homepage</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="winners.html">Winners</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="application.html">Application Form</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <!-- replace images/gallery-hero.jpg with your header picture -->
+      <div class="gallery-hero"><img src="images/photo_1_2025-10-24_05-35-15.jpg" alt="Gallery header"></div>
+      <h1 style="margin-top:14px">Our Amazing Winners</h1>
+      <p>
+      <div class="gallery-grid">
+        <img src="images/n.jpg" alt="Gallery 1">
+        <img src="images/p.jpg" alt="Gallery 2">
+        <img src="images/l.jpg" alt="Gallery 3">
+        <img src="images/photo_3_2025-10-24_05-35-16.jpg" alt="Gallery 4">
+        <img src="images/photo_4_2025-10-24_05-35-16.jpg" alt="Gallery 5">
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>© Stakes.US snapshot</small>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

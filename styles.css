@@ -1,0 +1,103 @@
+:root{
+  --accent:#186fa3;
+  --muted:#6b7280;
+  --bg:#f7fbff;
+  --card:#ffffff;
+  --radius:10px;
+  font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#0b1220;line-height:1.4}
+
+/* header / navigation */
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(90deg,#fff,#f3f9ff);position:sticky;top:0;z-index:10}
+.brand{font-weight:700}
+.topnav{display:flex;gap:16px;align-items:center}
+.topnav a{color:#0b1220;text-decoration:none;font-size:12px;font-weight:700;transition:opacity 0.2s ease}
+.topnav a:hover{opacity:0.7}
+.container{max-width:980px;margin:20px auto;padding:0 16px}
+.hero{background:linear-gradient(135deg,#eaf6ff,#fff);padding:28px;border-radius:var(--radius);margin-bottom:16px}
+.card{background:var(--card);padding:18px;border-radius:var(--radius);margin-bottom:16px;box-shadow:0 6px 18px rgba(11,18,32,0.04)}
+.gallery .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.gallery figure{margin:0}
+.gallery svg{width:100%;height:150px;display:block;border-radius:8px}
+label{display:block;margin-top:12px;font-size:14px;color:var(--muted)}
+input,select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #d1d5db;margin-top:6px;font-size:15px}
+.btn{margin-top:12px;background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+.site-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;max-width:980px;margin:0 auto}
+.link-like{background:transparent;border:0;color:var(--accent);cursor:pointer}
+
+/* homepage ad slots */
+.ad-row .ads, .application-ads{
+  display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;
+}
+.ad-slot{
+  background:#f1f5f9;border:1px dashed #d1d5db;padding:12px;border-radius:8px;flex:1 1 130px;text-align:center;color:var(--muted)
+}
+
+/* apply link alignment */
+.apply-link-wrap{margin-top:12px;text-align:right}
+
+/* full-bleed application hero */
+.app-hero img{width:100%;height:260px;object-fit:cover;display:block;border:0;margin:0;padding:0}
+.app-hero{margin:0;padding:0}
+
+/* top-banner (homepage) - preserved but moved to index inline styles earlier */
+.top-banner{width:100%;background:#1e90ff;color:#fff;padding:18px 16px;box-sizing:border-box}
+.top-banner .heading{font-size:22px;margin:0;outline:none}
+.top-banner .heading[contenteditable]:empty:before{content:"Type heading here";opacity:.7}
+
+/* ads grid used on homepage */
+.main-ads{max-width:980px;margin:12px auto;padding:0 16px}
+.ad-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
+.ad-slot{background:#f8fafc;border-radius:8px;min-height:130px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#0b1220;border:1px solid #e2e8f0}
+.ad-slot.casino{background:linear-gradient(135deg,#fff7f0,#fff);color:#b22222}
+.ad-slot.bank{background:linear-gradient(135deg,#f0fbff,#fff);color:#0b61a4}
+.ad-slot.stake{background:linear-gradient(135deg,#f7f5ff,#fff);color:#3b0d8a}
+.apply-cta{display:flex;justify-content:flex-end;margin-top:8px}
+.apply-cta .btn{padding:10px 16px}
+
+/* contact map */
+.map-wrap{margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid #e6eef8}
+.map-wrap iframe{width:100%;height:320px;border:0;display:block}
+
+/* winners gallery styling */
+.winners-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.winner-card{background:#fff;padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(11,18,32,0.04)}
+.winner-img{width:100%;height:140px;object-fit:cover;border-radius:6px}
+
+/* add or replace these rules (keeps original styles intact) */
+
+/* Make images fill the ad/gallery/winner boxes without distortion */
+.ad-bleed img,img,
+.ad-bleed.has-img img,g img,
+.winner-img,
+.gallery img {
+  width: 100%;;
+  height: 100%;0%;
+  display: block; display: block;
+  object-fit: cover;  object-fit: cover;
+}
+
+/* Ensure ads respect the --ad-height variable */ct the --ad-height variable */
+.ad-bleed { min-height: var(--ad-height); }height: var(--ad-height); }
+
+/* Controls vertical spacing between stacked ads (change gap value) */
+.ad-list { display:flex; flex-direction:column; gap:20px; }irection:column; gap:20px; }
+
+/* Utility to center about page content *//* Utility to center about page content */
+.center-text { text-align: center; }
+
+/* Remove extra top margin for application wrapper */ra top margin for application wrapper */
+.app-wrap { margin: 0 auto; }
+
+/* responsive *//* responsive navigation */
+@media (max-width: 640px) {
+  .topnav {
+    gap: 10px;
+  }
+  .topnav a {
+    font-size: 11px;
+  }
+}

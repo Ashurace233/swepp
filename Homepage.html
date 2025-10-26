@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stakes.US Sweepstakes — Home</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* homepage overrides: heading text, full-bleed stacked ads that touch page edges */
+    :root { --ad-height: 420px; }
+
+    /* ensure no horizontal scroll when using full-bleed elements */
+    html,body{overflow-x:hidden;margin:0;padding:0}
+
+    .top-banner{
+      width:100%;
+      background:#0b4681;
+      color:#fff;
+      padding:18px 16px;
+      box-sizing:border-box;
+    }
+    .top-banner .heading{
+      font-size:22px;
+      margin:0;
+      outline:none;
+      font-weight:700;
+      letter-spacing:0.6px;
+    }
+
+    /* keep header sticky under the banner */
+    .site-header{position:sticky;top:0;z-index:12}
+    .site-header .hamburger span{background:#000} /* ensure 3 lines are black */
+
+    .main-ads{max-width:980px;margin:12px auto;padding:0 16px;box-sizing:border-box}
+
+    /* Full-bleed stacked ad list */
+    .ad-list{display:block;padding:0;margin:0}
+    .ad-bleed{
+      width:100vw;
+      margin-left:calc(50% - 50vw);
+      box-sizing:border-box;
+      min-height:var(--ad-height);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight:700;
+      color:#071227;
+      border:0;
+      background:#f8fafc;
+      padding:18px;
+      margin-bottom:12px;
+    }
+    .ad-bleed.stake{background:linear-gradient(135deg,#eaf5ff,#fff);color:#0b3f78}
+    .ad-bleed.casino{background:linear-gradient(135deg,#fff7f0,#fff);color:#b22222}
+    .ad-bleed.bank{background:linear-gradient(135deg,#f0fbff,#fff);color:#0b61a4}
+    .ad-bleed.promo{background:linear-gradient(135deg,#f7f7fb,#fff);color:#0b1220}
+
+    /* remove rounded corners so ad touches edges vertically */
+    .ad-bleed {border-radius: 0;}
+
+    /* make ad text prominent */
+    .ad-bleed h2{margin:0;font-size:20px}
+    .ad-bleed p{margin:6px 0 0;font-size:13px;color:rgba(7,18,39,0.7)}
+
+    /* CTA alignment inside main container */
+    .apply-cta{display:flex;justify-content:flex-end;margin-top:8px}
+
+    @media(max-width:640px){
+      :root { --ad-height: 160px; }
+      .ad-bleed{padding:12px}
+      .top-banner .heading{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <!-- full width blue banner touching top edge; heading set to requested text -->
+  <div class="top-banner">
+    <!-- heading is set from config.js (not editable in the page) -->
+    <h1 class="heading" aria-label="Homepage heading">STAKE.US SWEEPSTAKES</h1>
+  </div>
+
+  <header class="site-header">
+    <div class="brand">Sweepstakes.US</div>
+    <button id="menuBtn" class="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="topNav" class="topnav" aria-hidden="true">
+      <a href="Homepage.html">Homepage</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="winners.html">Winners</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="application.html">Application Form</a>
+    </nav>
+  </header>
+
+  <main class="container main-ads" role="main">
+    <section class="card">
+      
+
+
+      <!-- stacked full-bleed ad blocks (one after the other) -->
+      <div class="ad-list" id="adList">
+        <div class="ad-bleed stake" data-slot="1">
+          <div>
+            <h2></h2>
+            <p></p>
+            <img src="images/a.jpg" alt="Application header — replace with your image">
+          </div>
+        </div>
+
+        <div class="ad-bleed casino" data-slot="2">
+          <div>
+            <h2>       </h2>
+            <p>    </p>
+            <img src="images/kkn.jpg" alt="Application header — replace with your image">
+          </div>
+        </div>
+
+        <div class="ad-bleed casino" data-slot="3">
+          <div>
+            <img src="images/vlcsnap-2025-10-23-10h50m28s686.png" alt="Application header — replace with your image">
+          </div>
+        </div>
+
+        <div class="ad-bleed bank" data-slot="4">
+          <div>
+            <img src="images/a.jpg" alt="Application header — replace with your image">
+          </div>
+        </div>
+
+        <div class="ad-bleed bank" data-slot="5">
+          <div>
+           
+            <img src="images/aa.jpg" alt="Application header — replace with your image">
+          </div>
+        </div>
+
+        <div class="ad-bleed promo" data-slot="6">
+          <div>
+            <img src="images/aaa.jpg" alt="Application header — replace with your image">
+          </div>
+        </div>
+
+        <div class="ad-bleed promo" data-slot="7">
+          <div>
+            <img src="images/a.jpg" alt="Application header — replace with your image">
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-cta">
+        <a class="btn" href="application.html">Apply here</a>
+      </div>
+    </section>
+  </main>
+
+
+
+  <!-- load a small site config so heading can be changed only in code -->
+  <script src="config.js"></script>
+  <script>
+    // apply configured heading if present
+    (function(){
+      const el = document.querySelector('.top-banner .heading');
+      if (window.SITE_CONFIG && window.SITE_CONFIG.heading) el.textContent = window.SITE_CONFIG.heading;
+    })();
+  </script>
+  <script src="https://cdn.emailjs.com/sdk/3.2.0/email.min.js"></script>
+  <script src="js/app.js"></script>
+
+   <div>
+            <img src="images/lii.jpg" alt="Application header — replace with your image">
+          </div>
+            <footer class="site-footer">
+    <small>© Sweepstakes.US</small>
+    <button id="logoutBtn" class="link-like">Logout</button>
+  </footer>
+</body>
+</html>

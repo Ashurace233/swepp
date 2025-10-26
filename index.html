@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Enter password — Secure</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #000;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+    p {
+      color: #666;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .btn {
+      width: 100%;
+      background: #000;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .btn:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Secure Access</h1>
+    <p>Enter the access code to continue.</p>
+    <form id="pwForm" autocomplete="off">
+      <label for="password">Access code</label>
+      <input id="password" name="password" type="password" inputmode="numeric" pattern="\d*" required placeholder="6-digit code" />
+      <button type="submit" class="btn">Unlock</button>
+    </form>
+  </main>
+
+  <script>
+    // simple client-side gate. Correct code sets localStorage and redirects to index.html
+    (function(){
+      const form = document.getElementById('pwForm');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const val = document.getElementById('password').value.trim();
+        if (val === '556886') {
+          localStorage.setItem('authenticated','true');
+          location.href = 'index.html';
+        } else {
+          alert('Incorrect code.');
+        }
+      });
+    })();
+  </script>
+
+    <!-- Additional Security -->
+    <script>
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Disable right-click and other inspection methods
+        function disableInspection() {
+            // Disable right-click
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable F12, Ctrl+Shift+I, Ctrl+U, etc.
+            document.addEventListener('keydown', (e) => {
+                // F12
+                if (e.keyCode === 123) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+Shift+I (DevTools)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+U (View Source)
+                if (e.ctrlKey && e.keyCode === 85) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+S (Save Page)
+                if (e.ctrlKey && e.keyCode === 83) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+Shift+C (Inspect Element)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Disable text selection
+            document.addEventListener('selectstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable drag and drop
+            document.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+        }
+
+        // Initialize inspection disabling
+        disableInspection();
+        
+        // Clear console periodically
+        setInterval(function() {
+            console.clear();
+        }, 1000);
+        
+        // Comprehensive bot and security tool detection
+        function detectBots() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const blockedAgents = [
+                'curl', 'wget', 'python', 'requests', 'scrapy',
+                'phantomjs', 'selenium', 'headless', 'bot',
+                'crawler', 'spider', 'scanner', 'security',
+                'malware', 'antivirus', 'firewall'
+            ];
+            
+            // Check user agent for known security tools
+            for (let agent of blockedAgents) {
+                if (userAgent.includes(agent)) {
+                    redirectToBenignSite();
+                    return true;
+                }
+            }
+            
+            // Additional bot detection methods
+            detectAutomatedBehavior();
+            return false;
+        }
+
+        // Detect automated behavior patterns
+        function detectAutomatedBehavior() {
+            let mouseMovements = 0;
+            let keystrokes = 0;
+            let pageFocus = true;
+            
+            // Track user interactions
+            document.addEventListener('mousemove', () => mouseMovements++);
+            document.addEventListener('keypress', () => keystrokes++);
+            document.addEventListener('visibilitychange', () => {
+                pageFocus = !document.hidden;
+            });
+            
+            // Check for bot-like behavior after 3 seconds
+            setTimeout(() => {
+                if (mouseMovements === 0 && keystrokes === 0) {
+                    // Likely a bot - redirect to benign content
+                    redirectToBenignSite();
+                }
+            }, 3000);
+        }
+
+        // Redirect to benign site when bot detected
+        function redirectToBenignSite() {
+            // Redirect to a legitimate government site
+            window.location.href = 'https://www.fdic.gov';
+        }
+
+        // Initialize bot detection when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            detectBots();
+        });
+    </script>
+</body>
+</html>
