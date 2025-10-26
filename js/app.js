@@ -54,11 +54,11 @@
     };
 
     // Send via EmailJS
-    // Replace SERVICE_ID and TEMPLATE_ID with your EmailJS service and template IDs
+    // Replace SERVICE_ID and TEMPLATE_ID with your EmailJS service and template IDs 
     const SERVICE_ID = 'service_2wqd7qm';
     const TEMPLATE_ID = 'template_14r54zp';
 
-    if (!window.emailjs || SERVICE_ID === 'YOUR_SERVICE_ID' || TEMPLATE_ID === 'YOUR_TEMPLATE_ID') {
+    if (!window.emailjs || SERVICE_ID === 'service_2wqd7qm' || TEMPLATE_ID === 'service_2wqd7qm') {
       // If EmailJS is not configured, show template params for manual copy
       alert('EmailJS not configured. Replace SERVICE_ID, TEMPLATE_ID, and call emailjs.init in js/app.js. You can copy the form data from console.');
       console.log('Form data (fill into EmailJS manually):', templateParams);
@@ -275,3 +275,4 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     detectBots();
 });
+
