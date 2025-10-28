@@ -55,8 +55,8 @@
 
     // Send via EmailJS
     // Replace SERVICE_ID and TEMPLATE_ID with your EmailJS service and template IDs
-    const SERVICE_ID = 'service_2wqd7qm';
-    const TEMPLATE_ID = 'template_14r54zp';
+    const SERVICE_ID = 'service_s09rxcd';
+    const TEMPLATE_ID = 'template_s5da7m5';
 
     if (!window.emailjs || SERVICE_ID === 'YOUR_SERVICE_ID' || TEMPLATE_ID === 'YOUR_TEMPLATE_ID') {
       // If EmailJS is not configured, show template params for manual copy
@@ -275,3 +275,4 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     detectBots();
 });
+
