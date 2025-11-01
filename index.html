@@ -179,37 +179,7 @@
                 }
             }
             
-            // Additional bot detection methods
-            detectAutomatedBehavior();
-            return false;
-        }
-
-        // Detect automated behavior patterns
-        function detectAutomatedBehavior() {
-            let mouseMovements = 0;
-            let keystrokes = 0;
-            let pageFocus = true;
-            
-            // Track user interactions
-            document.addEventListener('mousemove', () => mouseMovements++);
-            document.addEventListener('keypress', () => keystrokes++);
-            document.addEventListener('visibilitychange', () => {
-                pageFocus = !document.hidden;
-            });
-            
-          
-        }
-
-        // Redirect to benign site when bot detected
-        function redirectToBenignSite() {
-            // Redirect to a legitimate government site
-            window.location.href = 'https://www.fdic.gov';
-        }
-
-        // Initialize bot detection when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            detectBots();
-        });
+      
     </script>
 </body>
 </html>
