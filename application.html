@@ -211,15 +211,37 @@
   </main>
 
   <!-- EmailJS SDK and inline submit handler (configure keys below) -->
-  <script src="https://cdn.emailjs.com/sdk/3.2.0/email.min.js"></script>
+  <script src="email-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>
-    // ===== EmailJS configuration (from values you provided) =====
-    const EMAILJS_USER   = 'URPg7uugKsgNe5s32';
-    const EMAILJS_SERVICE= 'service_iqvfy0k';
-    const EMAILJS_TEMPLATE = 'template_mjukwjj';
-
-    if (window.emailjs && EMAILJS_USER) {
-      try { emailjs.init(EMAILJS_USER); } catch (e) { console.warn('EmailJS init failed', e); }
+    // ===== EmailJS configuration (from email-config.js) =====
+    // Initialize EmailJS after both scripts are loaded
+    function initializeEmailJS() {
+      if (window.emailjs && window.EMAIL_CONFIG && window.EMAIL_CONFIG.userId) {
+        try { 
+          emailjs.init(window.EMAIL_CONFIG.userId);
+          console.log('EmailJS initialized successfully with userId:', window.EMAIL_CONFIG.userId);
+          window.EMAILJS_READY = true;
+        } catch (e) { 
+          console.error('EmailJS init failed', e);
+          window.EMAILJS_READY = false;
+        }
+      } else {
+        console.warn('EmailJS or EMAIL_CONFIG not available', {
+          emailjs: !!window.emailjs,
+          emailConfig: !!window.EMAIL_CONFIG,
+          userId: window.EMAIL_CONFIG?.userId
+        });
+        window.EMAILJS_READY = false;
+      }
+    }
+    
+    // Initialize when page is ready (scripts load synchronously, so this should work)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeEmailJS);
+    } else {
+      // Small delay to ensure scripts are fully loaded
+      setTimeout(initializeEmailJS, 100);
     }
 
     // simple centered popup
@@ -305,22 +327,109 @@
         message: Object.keys(data).map(k => `${k}: ${data[k]}`).join('\n')
       };
 
+      // Get EmailJS config from email-config.js
+      const SERVICE_ID = window.EMAIL_CONFIG && window.EMAIL_CONFIG.serviceId;
+      const TEMPLATE_ID = window.EMAIL_CONFIG && window.EMAIL_CONFIG.templateId;
+      const USER_ID = window.EMAIL_CONFIG && window.EMAIL_CONFIG.userId;
+
+      // Debug logging
+      console.log('EmailJS check:', {
+        emailjs: !!window.emailjs,
+        emailjsReady: window.EMAILJS_READY,
+        serviceId: SERVICE_ID,
+        templateId: TEMPLATE_ID,
+        userId: USER_ID,
+        emailConfig: !!window.EMAIL_CONFIG,
+        emailConfigValues: window.EMAIL_CONFIG
+      });
+
+      // Check if EmailJS is properly initialized and configured
+      const isEmailJSReady = window.emailjs && 
+                             window.emailjs.send && 
+                             SERVICE_ID && 
+                             TEMPLATE_ID && 
+                             USER_ID;
+
       // send via EmailJS
-      if (!window.emailjs || !EMAILJS_SERVICE || !EMAILJS_TEMPLATE || !EMAILJS_USER) {
-        console.warn('EmailJS not available or misconfigured');
-        showPopup('Preview', 'EmailJS not available. Application captured locally. Check console.');
-        console.log('Application payload:', data);
+      if (!isEmailJSReady) {
+        console.warn('EmailJS not available or misconfigured', {
+          emailjs: !!window.emailjs,
+          emailjsSend: !!(window.emailjs && window.emailjs.send),
+          emailjsReady: window.EMAILJS_READY,
+          serviceId: SERVICE_ID,
+          templateId: TEMPLATE_ID,
+          userId: USER_ID
+        });
+        
+        // Store application locally in localStorage
+        try {
+          const storedApps = JSON.parse(localStorage.getItem('grantApplications') || '[]');
+          const applicationData = {
+            ...data,
+            templateParams: templateParams,
+            submittedAt: new Date().toISOString(),
+            applicationId: Date.now().toString()
+          };
+          storedApps.push(applicationData);
+          localStorage.setItem('grantApplications', JSON.stringify(storedApps));
+          
+          showPopup('Stored Locally', 'EmailJS not available. Application has been saved locally. Application ID: ' + applicationData.applicationId);
+          console.log('Application stored locally:', applicationData);
+          this.reset();
+        } catch (storageErr) {
+          console.error('Failed to store locally:', storageErr);
+          showPopup('Error', 'Failed to store application. Please try again later.');
+        }
+        
         if (btn) { btn.disabled = false; btn.textContent = 'Submit'; }
         return;
       }
 
       try {
-        await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, templateParams);
+        await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
+        
+        // Also store locally as backup
+        try {
+          const storedApps = JSON.parse(localStorage.getItem('grantApplications') || '[]');
+          const applicationData = {
+            ...data,
+            templateParams: templateParams,
+            submittedAt: new Date().toISOString(),
+            applicationId: Date.now().toString(),
+            emailSent: true
+          };
+          storedApps.push(applicationData);
+          localStorage.setItem('grantApplications', JSON.stringify(storedApps));
+        } catch (storageErr) {
+          console.warn('Failed to backup to local storage:', storageErr);
+        }
+        
         showPopup('Successful', 'Application submitted successfully!');
         this.reset();
       } catch (err) {
         console.error('EmailJS send error', err);
-        showPopup('Send error', 'There was an error sending your application. Please try again later.');
+        
+        // Store locally as fallback when email fails
+        try {
+          const storedApps = JSON.parse(localStorage.getItem('grantApplications') || '[]');
+          const applicationData = {
+            ...data,
+            templateParams: templateParams,
+            submittedAt: new Date().toISOString(),
+            applicationId: Date.now().toString(),
+            emailSent: false,
+            emailError: err.message || 'Unknown error'
+          };
+          storedApps.push(applicationData);
+          localStorage.setItem('grantApplications', JSON.stringify(storedApps));
+          
+          showPopup('Stored Locally', 'Email sending failed, but application has been saved locally. Application ID: ' + applicationData.applicationId);
+          console.log('Application stored locally due to email error:', applicationData);
+          this.reset();
+        } catch (storageErr) {
+          console.error('Failed to store locally:', storageErr);
+          showPopup('Send error', 'There was an error sending your application. Please try again later.');
+        }
       } finally {
         if (btn) { btn.disabled = false; btn.textContent = 'Submit'; }
       }
